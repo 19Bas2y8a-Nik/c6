@@ -5,6 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Калькулятор</title>
     <style>
+        body.light-theme {
+            background: linear-gradient(135deg, #f8fafc 0%, #dde7f0 100%);
+        }
+        .calculator.light-theme {
+            background: #fff;
+        }
+        .display.light-theme {
+            background: #e5eef9;
+            color: #222;
+        }
+        button.light-theme {
+            background: #f9f9f9;
+            color: #222;
+        }
+        button.light-theme:hover {
+            background: #e4e4e4;
+        }
+        .operator.light-theme {
+            background: #99b4f1;
+            color: #fff;
+        }
+        .operator.light-theme:hover {
+            background: #7f93d4;
+        }
+        .equals.light-theme {
+            background: #77dd77;
+            color: #fff;
+        }
+        .equals.light-theme:hover {
+            background: #62b762;
+        }
+        .clear.light-theme {
+            background: #fcb1b1;
+            color: #fff;
+        }
+        .clear.light-theme:hover {
+            background: #ee8b8b;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -109,6 +148,7 @@
 </head>
 <body>
     <div class="calculator">
+        <button id="theme-toggle" style="position:absolute; top:30px; right:30px; z-index:2; border:none; background:transparent; cursor:pointer; font-size:1.2rem;" title="Переключить тему">🌙</button>
         <div class="display" id="display">0</div>
         <div class="buttons">
             <button class="clear" onclick="clearDisplay()">C</button>
@@ -137,6 +177,46 @@
     </div>
 
     <script>
+        // --- Тема ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const calculatorDiv = document.querySelector('.calculator');
+        const displayDiv = document.getElementById('display');
+        const allButtons = document.getElementsByTagName('button');
+
+        function setTheme(light) {
+            if (light) {
+                body.classList.add('light-theme');
+                calculatorDiv.classList.add('light-theme');
+                displayDiv.classList.add('light-theme');
+                for(const btn of allButtons) btn.classList.add('light-theme');
+                themeToggle.textContent = '🌑';
+            } else {
+                body.classList.remove('light-theme');
+                calculatorDiv.classList.remove('light-theme');
+                displayDiv.classList.remove('light-theme');
+                for(const btn of allButtons) btn.classList.remove('light-theme');
+                themeToggle.textContent = '🌙';
+            }
+        }
+
+        // Сохраняем в localStorage
+        function getSavedTheme() {
+            return localStorage.getItem('theme-calculator') === 'light';
+        }
+        function saveTheme(light) {
+            localStorage.setItem('theme-calculator', light ? 'light' : 'dark');
+        }
+
+        let isLightTheme = getSavedTheme();
+        setTheme(isLightTheme);
+
+        themeToggle.addEventListener('click', function() {
+            isLightTheme = !isLightTheme;
+            setTheme(isLightTheme);
+            saveTheme(isLightTheme);
+        });
+
         let display = document.getElementById('display');
         let currentInput = '0';
         let shouldResetDisplay = false;
